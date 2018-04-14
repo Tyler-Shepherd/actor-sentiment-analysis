@@ -134,9 +134,13 @@ if __name__ == "__main__":
 			num_words_missing_from_lexicon += num_words_missing
 			total_num_words += num_words
 
-			if score > 0 and actor_info[actor] == 'Positive':
+			print score
+
+			if score > 1 and actor_info[actor] == 'Positive':
 				num_actors_retrieve_correct_sentiment += 1
-			elif score < 0 and actor_info[actor] == 'Negative':
+			elif score < -1 and actor_info[actor] == 'Negative':
+				num_actors_retrieve_correct_sentiment += 1
+			elif score > -1 and score < 1 and actor_info[actor] == 'Neutral':
 				num_actors_retrieve_correct_sentiment += 1
 
 
