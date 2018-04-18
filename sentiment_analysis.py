@@ -90,14 +90,6 @@ def sentiment_analysis_using_lexicon(sentences, lexicon):
 
 
 
-
-
-
-
-
-
-
-
 if __name__ == "__main__":
 
 	review_data, actor_sentences = NLPProject.get_review_data()
