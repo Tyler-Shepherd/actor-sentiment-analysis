@@ -88,6 +88,45 @@ def get_review_data():
 
     return lis_movies, lis_actor_sentences, word_identifier, actor_identifier, all_reviews, actor_and_review
 
+
+def print_data_output(filename, data):
+    output_file = open(filename, 'w')
+    for i in range(len(data)):
+        data_point = actor_and_review[i]
+
+        actor_name = data_point[0]
+
+        # Convert actor names to $T$
+        rev_line = data_point[1].replace(actor_name,"$T$")
+        rev_line = rev_line.replace(actor_name.lower(), "$T$")
+
+        # Replace all mentions of just one word in the actors name (i.e. their last name)
+        for word in actor_name.split():
+            if len(word) < 2:
+                # Ignore single letters (like an initial)
+                continue
+            rev_line = rev_line.replace(word, "$T$")
+            rev_line = rev_line.replace(word, "$T$")
+
+        while "$T$ $T$" in rev_line:
+            rev_line = rev_line.replace("$T$ $T$", "$T$")
+
+        rev_line += '\n'
+
+        aspect_line = data_point[0] + "\n"
+        if data_point[2] == "Positive":
+            polarity_line = str(1) + "\n"
+        elif data_point[2] == "Negative":
+            polarity_line = str(-1) + "\n"
+        elif data_point[2] == "Neutral":
+            polarity_line = str(0) + "\n"
+
+        output_file.write(rev_line + aspect_line + polarity_line)
+    output_file.close()
+
+
+
+
 if __name__ == "__main__":
     lis_movies, lis_actor_sentences, word_identifier, actor_identifier, all_reviews, actor_and_review = get_review_data()
     g = sorted(word_identifier.items(), key=itemgetter(1))
@@ -110,6 +149,7 @@ if __name__ == "__main__":
     #     review_output_file.write(rev_line)
     # review_output_file.close()
 
+    # Get train and test data
     num_data = len(actor_and_review)
     print("Num data:", num_data)
 
@@ -119,49 +159,6 @@ if __name__ == "__main__":
     print("Num train", num_train)
     print("Num test", num_test)
 
-    train_output_file = open("actor_train.txt", 'w')
-    for i in range(num_train):
-        data_point = actor_and_review[i]
+    print_data_output("actor_train.txt", actor_and_review[0:num_train])
 
-        # Convert actor names to $T$
-        rev_line = data_point[1].replace(data_point[0],"$T$")
-        rev_line = rev_line.replace(data_point[0].lower(), "$T$")
-        rev_line += '\n'
-
-        aspect_line = data_point[0] + "\n"
-        if data_point[2] == "Positive":
-            polarity_line = str(1) + "\n"
-        elif data_point[2] == "Negative":
-            polarity_line = str(-1) + "\n"
-        elif data_point[2] == "Neutral":
-            polarity_line = str(0) + "\n"
-
-        train_output_file.write(rev_line + aspect_line + polarity_line)
-    train_output_file.close()
-
-    test_output_file = open("actor_test.txt", 'w')
-    for j in range(num_train, num_train + num_test):
-        data_point = actor_and_review[j]
-
-        # Convert actor names to $T$
-        actor_name = data_point[0]
-        rev_line = data_point[1].replace(actor_name,"$T$")
-        rev_line = rev_line.replace(actor_name.lower(), "$T$")
-        # for word in actor_name.split():
-            # print(word)
-
-        rev_line += '\n'
-
-        aspect_line = data_point[0] + "\n"
-        if data_point[2] == "Positive":
-            polarity_line = str(1) + "\n"
-        elif data_point[2] == "Negative":
-            polarity_line = str(-1) + "\n"
-        elif data_point[2] == "Neutral":
-            polarity_line = str(0) + "\n"
-
-        test_output_file.write(rev_line + aspect_line + polarity_line)
-    test_output_file.close()
-
-
-    # pprint(lis_actor_sentences)
+    print_data_output("actor_test.txt", actor_and_review[num_train:])
