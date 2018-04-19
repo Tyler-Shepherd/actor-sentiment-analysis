@@ -1,0 +1,5 @@
+Some actor names in the data aren't captured because a shortened form of the name was used. For example, we may be looking for "Freddie Prinze Jr." but the review refers to him at one point as just "Prinze".
+
+
+
+We caught some Turk results that were clearly fake, but there may be many that are false results we didn't catch.
