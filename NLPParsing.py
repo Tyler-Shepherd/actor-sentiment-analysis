@@ -91,6 +91,11 @@ def get_review_data():
 
 def print_data_output(filename, data):
     output_file = open(filename, 'w')
+
+    num_positive = 0
+    num_negative = 0
+    num_neutral = 0
+
     for i in range(len(data)):
         data_point = actor_and_review[i]
 
@@ -116,13 +121,18 @@ def print_data_output(filename, data):
         aspect_line = data_point[0] + "\n"
         if data_point[2] == "Positive":
             polarity_line = str(1) + "\n"
+            num_positive += 1
         elif data_point[2] == "Negative":
             polarity_line = str(-1) + "\n"
+            num_negative += 1
         elif data_point[2] == "Neutral":
             polarity_line = str(0) + "\n"
+            num_neutral += 1
 
         output_file.write(rev_line + aspect_line + polarity_line)
     output_file.close()
+
+    return num_positive, num_neutral, num_negative
 
 
 
@@ -159,6 +169,10 @@ if __name__ == "__main__":
     print("Num train", num_train)
     print("Num test", num_test)
 
-    print_data_output("actor_train.txt", actor_and_review[0:num_train])
+    num_positive, num_neutral, num_negative = print_data_output("actor_train.txt", actor_and_review[0:num_train])
 
-    print_data_output("actor_test.txt", actor_and_review[num_train:])
+    print("Train data (positive, neutral, negative)", num_positive, num_neutral, num_negative)
+
+    num_positive, num_neutral, num_negative = print_data_output("actor_test.txt", actor_and_review[num_train:])
+
+    print("Test data (positive, neutral, negative)", num_positive, num_neutral, num_negative)

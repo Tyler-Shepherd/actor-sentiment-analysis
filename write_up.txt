@@ -1,0 +1,18 @@
+Some actor names in the data aren't captured because a shortened form of the name was used. For example, we may be looking for "Freddie Prinze Jr." but the review refers to him at one point as just "Prinze".  ---> fixed by splitting names
+
+
+
+We caught some Turk results that were clearly fake, but there may be many that are false results we didn't catch.
+
+
+Training data: 1185 (actor, review, sentiment) data points
+	446 positive (37.64%)
+	518 neutral (43.71%)
+	211 negative (17.81%)
+	10 not rated (0.84%)
+
+Test data: 296 (actor, review, sentiment) data points
+	116 positive (39.20%)
+	124 neutral (41.89%)
+	53 negative (17.91%)
+	3 not rated (1.01%)
