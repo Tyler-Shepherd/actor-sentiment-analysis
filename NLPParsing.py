@@ -141,11 +141,15 @@ if __name__ == "__main__":
 
     test_output_file = open("actor_test.txt", 'w')
     for j in range(num_train, num_train + num_test):
-        data_point = actor_and_review[i]
+        data_point = actor_and_review[j]
 
         # Convert actor names to $T$
-        rev_line = data_point[1].replace(data_point[0],"$T$")
-        rev_line = rev_line.replace(data_point[0].lower(), "$T$")
+        actor_name = data_point[0]
+        rev_line = data_point[1].replace(actor_name,"$T$")
+        rev_line = rev_line.replace(actor_name.lower(), "$T$")
+        # for word in actor_name.split():
+            # print(word)
+
         rev_line += '\n'
 
         aspect_line = data_point[0] + "\n"
