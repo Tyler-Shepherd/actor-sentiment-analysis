@@ -1,6 +1,7 @@
 from pprint import pprint
 import NLPProject
 import sys
+import random
 
 
 def read_lexicon():
@@ -85,8 +86,21 @@ def sentiment_analysis_using_lexicon(sentences, lexicon):
 
 				score += (pos_score - neg_score)
 
+
+	if score > 1:
+		score = 1
+	elif score < -1:
+		score = -1
+	elif score > -1 and score < 1:
+		score = 0
+
 	return score, num_words_missing, num_words
 
+
+def sentiment_analysis_guessing_randomly():
+	guess = random.randint(-1,1)
+
+	return guess, 0, 0
 
 
 
@@ -121,18 +135,19 @@ if __name__ == "__main__":
 
 			review_sentences = actor_to_sentences[actor]
 
-			score, num_words_missing, num_words = sentiment_analysis_using_lexicon(review_sentences, lexicon)
+			# score, num_words_missing, num_words = sentiment_analysis_using_lexicon(review_sentences, lexicon)
+			score, num_words_missing, num_words = sentiment_analysis_guessing_randomly()
 
 			num_words_missing_from_lexicon += num_words_missing
 			total_num_words += num_words
 
 			print score
 
-			if score > 1 and actor_info[actor] == 'Positive':
+			if score == 1 and actor_info[actor] == 'Positive':
 				num_actors_retrieve_correct_sentiment += 1
-			elif score < -1 and actor_info[actor] == 'Negative':
+			elif score == -1 and actor_info[actor] == 'Negative':
 				num_actors_retrieve_correct_sentiment += 1
-			elif score > -1 and score < 1 and actor_info[actor] == 'Neutral':
+			elif score == 0 and actor_info[actor] == 'Neutral':
 				num_actors_retrieve_correct_sentiment += 1
 
 
@@ -143,5 +158,8 @@ if __name__ == "__main__":
 	print "total num words:", total_num_words
 
 	print "num actors retrieve correct sentiment:", num_actors_retrieve_correct_sentiment
-	print "error:", 1 - float(num_actors_retrieve_correct_sentiment) / total_num_actors
+
+	accuracy = float(num_actors_retrieve_correct_sentiment) / total_num_actors
+	print "error:", 1 - accuracy
+	print "accuracy:", accuracy
 
