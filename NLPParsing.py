@@ -2,6 +2,7 @@ import csv
 from pprint import pprint
 from operator import itemgetter
 import math
+import name_tagging
 
 # Amartya's column numbers
 # has_actor_col = -1
@@ -159,20 +160,34 @@ if __name__ == "__main__":
     #     review_output_file.write(rev_line)
     # review_output_file.close()
 
+
+
+
     # Get train and test data
-    num_data = len(actor_and_review)
-    print("Num data:", num_data)
+    # num_data = len(actor_and_review)
+    # print("Num data:", num_data)
 
-    num_train = math.ceil(0.8 * num_data)
-    num_test = num_data - num_train
+    # num_train = math.ceil(0.8 * num_data)
+    # num_test = num_data - num_train
 
-    print("Num train", num_train)
-    print("Num test", num_test)
+    # print("Num train", num_train)
+    # print("Num test", num_test)
 
-    num_positive, num_neutral, num_negative = print_data_output("actor_train.txt", actor_and_review[0:num_train])
+    # num_positive, num_neutral, num_negative = print_data_output("actor_train.txt", actor_and_review[0:num_train])
 
-    print("Train data (positive, neutral, negative)", num_positive, num_neutral, num_negative)
+    # print("Train data (positive, neutral, negative)", num_positive, num_neutral, num_negative)
 
-    num_positive, num_neutral, num_negative = print_data_output("actor_test.txt", actor_and_review[num_train:])
+    # num_positive, num_neutral, num_negative = print_data_output("actor_test.txt", actor_and_review[num_train:])
 
-    print("Test data (positive, neutral, negative)", num_positive, num_neutral, num_negative)
+    # print("Test data (positive, neutral, negative)", num_positive, num_neutral, num_negative)
+
+
+
+    # Name tagging
+    # Gets all named entities of type PER in the review
+    # Currently unused
+    # Could use entity linking to determine whether each of these are an actor
+
+    for review in all_reviews:
+        named_entities = name_tagging.name_tagging(review)
+        print(named_entities)

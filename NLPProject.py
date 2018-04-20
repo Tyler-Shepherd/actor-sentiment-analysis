@@ -69,3 +69,10 @@ def get_review_data():
 
     return lis_movies, lis_actor_sentences
     # pprint(lis_actor_sentences)
+
+
+
+
+
+
+
