@@ -1,4 +1,4 @@
-Some actor names in the data aren't captured because a shortened form of the name was used. For example, we may be looking for "Freddie Prinze Jr." but the review refers to him at one point as just "Prinze".  ---> fixed by splitting names
+Some actor names in the data aren't captured because a shortened form of the name was used. For example, we may be looking for "Freddie Prinze Jr." but the review refers to him at one point as just "Prinze".  ---> fixed by splitting names ---> could be further fixed by name tagging
 
 
 
@@ -16,3 +16,10 @@ Test data: 296 (actor, review, sentiment) data points
 	124 neutral (41.89%)
 	53 negative (17.91%)
 	3 not rated (1.01%)
+
+
+
+
+
+Runtime of train_cnn.py (for sentiment analysis): 149m 24.021s
+Runtime of train_rnn.py : 16m 55.333s
