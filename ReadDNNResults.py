@@ -4,15 +4,14 @@ import NLPParsing
 import math
 
 
-
-
-
-
-if __name__ == "__main__":
+def compute_DNN_accuracy(csv_file, test_data):
 	sentence_to_sentiment = {}
 	counter = 0
 
-	with open("actor_sentences.csv", 'r') as csvfile:
+	sentiments = []
+
+	# Open the results of the CNN sentiment analyzer
+	with open(csv_file, 'r') as csvfile:
 		spamreader = csv.reader(csvfile)
 		for row in spamreader:
 			counter += 1
@@ -20,45 +19,60 @@ if __name__ == "__main__":
 				continue
 			sentence = row[0]
 			sentiment = row[2]
-			sentence_to_sentiment[sentence] = sentiment
+			sentence_to_sentiment[sentence] = float(sentiment)
+			sentiments.append(float(sentiment))
 
-	lis_movies, lis_actor_sentences, word_identifier, actor_identifier, all_reviews, actor_and_review = NLPParsing.get_review_data()
+	# Calculate standard deviation
+	num_sentiments = len(sentiments)
+	sum_sentiments = sum(sentiments)
+	sentiment_mean = float(sum_sentiments) / num_sentiments
+	stdev = sum([(a - sentiment_mean) ** 2 for a in sentiments])
+	stdev = stdev / num_sentiments
+	stdev = math.sqrt(stdev)
+	print("stdev", stdev)
 
 	# Test on only test data
+	num_reviews = len(test_data)
+	num_correct = 0
 
-	num_data = len(actor_and_review)
-	num_train = int(math.ceil(0.8 * num_data))
-	num_test = num_data - num_train
+	for data_point in test_data:
+		review = data_point[0]
+		actor = data_point[1]
 
-	test_data = actor_and_review[num_train:]
+		actor_name = actor["name"]
+		actor_sentences = actor["sentences"]
+		true_sentiment = actor["sentiment"]
 
-	for i in range(len(test_data)):
-		data_point = actor_and_review[i]
+		pred_sentiment = 0
 
-		actor_name = data_point[0]
-		review = data_point[1]
-		true_sentiment = data_point[2]
+		# The DNN-Sentiment splits sentences weirdly so we need to check if every DNN-Sentiment result sentence is part of any sentence the actor is in
+		for sentence in sentence_to_sentiment.keys():
+			for actor_sentence in actor_sentences:
+				if sentence in actor_sentence:
+					pred_sentiment += sentence_to_sentiment[sentence]
 
-		# Read the sentiment of each sentence the actor is in from DNN results
-		for (actor_dict, rev) in lis_actor_sentences:
-			if rev == review:
-				for sentence in actor_dict[actor_name]:
-					print(sentence)
+		# DNN-Sentiment only returns positive/negative
+		# So anything within one stdev/2 from 0 we rate "neutral"
+		if pred_sentiment >= stdev and true_sentiment == 1:
+			num_correct += 1
+		elif pred_sentiment <= -stdev and true_sentiment == -1:
+			num_correct += 1
+		elif pred_sentiment > -stdev and pred_sentiment < stdev and true_sentiment == 0:
+			num_correct += 1
+
+	return float(num_correct) / num_reviews	
 
 
 
 
-	# for review in lis_actor_sentences:
- #        for actor in review.keys():
- #            sentiment = 0
- #            for sen in review[actor]:
- #                sentence += sen
- #            sentence += '.\n'
+if __name__ == "__main__":
+	review_data, _, _ = NLPParsing.get_review_data()
+	train_data, test_data = NLPParsing.split_train_and_test(review_data)
 
-	
+	CNN_accuracy = compute_DNN_accuracy("actor_sentences_CNN.csv", test_data)
 
-		# pred_sentiment = 0
+	print("CNN accuracy", CNN_accuracy)
 
-		# for sentence in sentence_to_sentiment.keys():
-		# 	if sentence in review:
-		# 		pred_sentiment += 
+	RNN_accuracy = compute_DNN_accuracy("actor_sentences_RNN.csv", test_data)
+
+	print("RNN accuracy", RNN_accuracy)
