@@ -2,7 +2,7 @@ import csv
 from pprint import pprint
 from operator import itemgetter
 import math
-import name_tagging
+import NameTagging
 
 # Amartya's column numbers
 # has_actor_col = -1

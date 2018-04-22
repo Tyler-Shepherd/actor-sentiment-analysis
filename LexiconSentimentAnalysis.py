@@ -2,6 +2,7 @@ from pprint import pprint
 import NLPProject
 import sys
 import random
+import NLPParsing
 
 
 def read_lexicon():
@@ -69,6 +70,7 @@ def sentiment_analysis_using_lexicon(sentences, lexicon):
 		# TODO: remove punctuation (lots of "words" are just punctuation)
 
 		for word in sentence:
+
 			num_words += 1
 
 			if word not in lexicon:
@@ -105,61 +107,38 @@ def sentiment_analysis_guessing_randomly():
 
 
 if __name__ == "__main__":
-
-	review_data, actor_sentences = NLPProject.get_review_data()
+	review_data, _, _ = NLPParsing.get_review_data()
+	train_data, test_data = NLPParsing.split_train_and_test(review_data)
 
 	lexicon = read_lexicon()
 
-	total_num_actors = 0
-	num_actors_missing = 0
 	num_actors_retrieve_correct_sentiment = 0
 
 	total_num_words = 0
 	num_words_missing_from_lexicon = 0
 
 
-	for i in range(len(review_data)):
-		review = review_data[i]
-		actor_to_sentences = actor_sentences[i]
+	for data_point in test_data:
+		review = data_point[0]
+		actor = data_point[1]
 
-		actor_info = review["actor_info"]
+		actor_name = actor["name"]
+		actor_sentences = actor["sentences"]
+		actor_sentiment = actor["sentiment"]
 
-		actor_scores = {}
+		score, num_words_missing, num_words = sentiment_analysis_using_lexicon(actor_sentences, lexicon)
+		# score, num_words_missing, num_words = sentiment_analysis_guessing_randomly()
 
-		for actor in actor_info.keys():
-			total_num_actors += 1
+		num_words_missing_from_lexicon += num_words_missing
+		total_num_words += num_words
 
-			if actor not in actor_to_sentences:
-				num_actors_missing += 1
-				continue
+		if score == actor_sentiment:
+			num_actors_retrieve_correct_sentiment += 1
 
-			review_sentences = actor_to_sentences[actor]
-
-			# score, num_words_missing, num_words = sentiment_analysis_using_lexicon(review_sentences, lexicon)
-			score, num_words_missing, num_words = sentiment_analysis_guessing_randomly()
-
-			num_words_missing_from_lexicon += num_words_missing
-			total_num_words += num_words
-
-			print score
-
-			if score == 1 and actor_info[actor] == 'Positive':
-				num_actors_retrieve_correct_sentiment += 1
-			elif score == -1 and actor_info[actor] == 'Negative':
-				num_actors_retrieve_correct_sentiment += 1
-			elif score == 0 and actor_info[actor] == 'Neutral':
-				num_actors_retrieve_correct_sentiment += 1
-
-
-	print "num actors missing:", num_actors_missing
-	print "total actors:", total_num_actors
 
 	print "num words missing from lexicon:", num_words_missing_from_lexicon
 	print "total num words:", total_num_words
 
-	print "num actors retrieve correct sentiment:", num_actors_retrieve_correct_sentiment
-
-	accuracy = float(num_actors_retrieve_correct_sentiment) / total_num_actors
+	accuracy = float(num_actors_retrieve_correct_sentiment) / len(test_data)
 	print "error:", 1 - accuracy
 	print "accuracy:", accuracy
-
