@@ -26,3 +26,7 @@ Runtime of train_rnn.py : 16m 55.333s
 
 
 word embedding: 100
+
+
+
+Some incorrectly formatted from Turk (i.e. didn't include sentiment)
