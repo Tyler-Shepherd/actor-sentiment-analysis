@@ -187,6 +187,28 @@ def split_train_and_test(review_data):
     return train_data, test_data
 
 
+
+# Returns list of sentences containing actor_name from the review
+def get_actor_sentences(actor_name, review):
+    sentences = review.split('.')
+
+    actor_sentences = []
+
+    for sentence in sentences:
+        if actor_name in sentence or actor_name.lower() in sentence:
+            actor_sentences.append(sentence)
+            continue
+        for word in actor_name.split(" "):
+            if len(word) <= 2:
+                continue #ignore initials
+            elif word in sentence:
+                actor_sentences.append(sentence)
+
+    return actor_sentences
+
+
+
+
 if __name__ == "__main__":
     # lis_movies, lis_actor_sentences, word_identifier, actor_identifier, all_reviews, actor_and_review = get_review_data()
     review_data, word_identifier, actor_identifier = get_review_data()

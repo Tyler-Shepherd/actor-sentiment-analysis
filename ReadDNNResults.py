@@ -29,6 +29,7 @@ def compute_DNN_accuracy(csv_file, test_data):
 	stdev = sum([(a - sentiment_mean) ** 2 for a in sentiments])
 	stdev = stdev / num_sentiments
 	stdev = math.sqrt(stdev)
+	print("mean", sentiment_mean)
 	print("stdev", stdev)
 
 	# Test on only test data

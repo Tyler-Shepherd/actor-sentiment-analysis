@@ -88,12 +88,21 @@ def sentiment_analysis_using_lexicon(sentences, lexicon):
 
 				score += (pos_score - neg_score)
 
+				break
 
-	if score > 1:
+	avg_sentiment = 0.010794992 # over all words in lexicon
+	neutral_sentiment = (num_words - num_words_missing) * avg_sentiment # The exact neutral expected score
+
+	if num_words - num_words_missing == 0:
+		score = 0
+	else:
+		score = score / (num_words - num_words_missing) # normalize score
+
+	if score > avg_sentiment:
 		score = 1
-	elif score < -1:
+	elif score < -avg_sentiment:
 		score = -1
-	elif score > -1 and score < 1:
+	else:
 		score = 0
 
 	return score, num_words_missing, num_words
@@ -104,6 +113,15 @@ def sentiment_analysis_guessing_randomly():
 
 	return guess, 0, 0
 
+
+def GetSentiment(entity, review):
+	lexicon = read_lexicon()
+
+	actor_sentences = NLPParsing.get_actor_sentences(entity, review)
+
+	score, num_words_missing, num_words = sentiment_analysis_using_lexicon(actor_sentences, lexicon)
+
+	return score
 
 
 if __name__ == "__main__":
@@ -117,6 +135,7 @@ if __name__ == "__main__":
 	total_num_words = 0
 	num_words_missing_from_lexicon = 0
 
+	num_correct = {-1: 0, 1: 0, 0: 0}
 
 	for data_point in test_data:
 		review = data_point[0]
@@ -134,11 +153,15 @@ if __name__ == "__main__":
 
 		if score == actor_sentiment:
 			num_actors_retrieve_correct_sentiment += 1
+			num_correct[score] += 1
 
 
-	print "num words missing from lexicon:", num_words_missing_from_lexicon
-	print "total num words:", total_num_words
+	print("num words missing from lexicon:", num_words_missing_from_lexicon)
+	print("total num words:", total_num_words)
 
 	accuracy = float(num_actors_retrieve_correct_sentiment) / len(test_data)
-	print "error:", 1 - accuracy
-	print "accuracy:", accuracy
+	print("error:", 1 - accuracy)
+	print("accuracy:", accuracy)
+
+
+	pprint(num_correct)
