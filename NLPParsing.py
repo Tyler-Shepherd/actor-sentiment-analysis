@@ -34,6 +34,17 @@ def sentiment_to_int(sentiment):
         return 0 # Incorrectly formatted sentiment, assume neutral
 
 
+def int_to_sentiment(sent_int):
+    if sent_int == 1:
+        return "Positive"
+    elif sent_int == 0:
+        return "Neutral"
+    elif sent_int == -1:
+        return "Negative"
+    else:
+        return "Neutral" # Incorrect number, assume neutral
+
+
 
 
 def get_review_data():
@@ -94,23 +105,34 @@ def get_review_data():
                 word_identifier[term] = counter
                 counter += 1
 
-        movie_review_sentences = review["review"].split(".")
-        for sentence in movie_review_sentences:
-            for actor in review["actor_info"]:
-                actor_name = actor["name"]
+        # movie_review_sentences = review["review"].split(".")
 
-                if not actor_name in actor_identifier:
-                    actor_identifier[actor_name] = actor_counter
-                    actor_counter += 1
+        for actor in review["actor_info"]:
+            actor["sentences"] = get_actor_sentences(actor["name"], review["review"])
 
-                if actor_name in sentence or actor_name.lower() in sentence:
-                    # TODO: update this to be better
-                    actor["sentences"].append(sentence)
-                for word in actor_name.split(" "):
-                    if len(word) < 2:
-                        continue
-                    elif word in sentence:
-                        actor["sentences"].append(sentence)
+            if not actor["name"] in actor_identifier:
+                actor_identifier[actor["name"]] = actor_counter
+                actor_counter += 1
+
+
+        # for sentence in movie_review_sentences:
+        #     for actor in review["actor_info"]:
+        #         actor_name = actor["name"]
+
+        #         if not actor_name in actor_identifier:
+        #             actor_identifier[actor_name] = actor_counter
+        #             actor_counter += 1
+
+        #         if actor_name in sentence or actor_name.lower() in sentence:
+        #             # TODO: update this to be better
+        #             actor["sentences"].append(sentence)
+        #             continue
+        #         for word in actor_name.split(" "):
+        #             if len(word) < 2:
+        #                 continue
+        #             elif word in sentence:
+        #                 actor["sentences"].append(sentence)
+        #                 continue
 
     return review_data, word_identifier, actor_identifier
 
@@ -203,6 +225,7 @@ def get_actor_sentences(actor_name, review):
                 continue #ignore initials
             elif word in sentence:
                 actor_sentences.append(sentence)
+                break
 
     return actor_sentences
 
@@ -217,28 +240,28 @@ if __name__ == "__main__":
     actor_g = sorted(actor_identifier.items(), key = itemgetter(1))
 
     # Print word ids
-    output_file = open("word_id.txt", 'wb')
+    output_file = open("word_id.txt", 'w')
     for each in g:
         str_line = each[0] + " " + str(each[1]) + "\n"
         output_file.write(str_line)
     output_file.close()
 
     # Print actor ids
-    actor_output_file = open("actor_id.txt", 'wb')
+    actor_output_file = open("actor_id.txt", 'w')
     for actor in actor_g:
         str_line = actor[0] + " " + str(actor[1]) + "\n"
         actor_output_file.write(str_line)
     actor_output_file.close()
 
     # Print all review text
-    review_output_file = open("movie_reviews.txt", 'wb')
+    review_output_file = open("movie_reviews.txt", 'w')
     for review in review_data:
         rev_line = review["review"] +"\n"
         review_output_file.write(rev_line)
     review_output_file.close()
 
     # Print sentences each actor is in
-    actor_sentences_output_file = open("actor_sentences.txt", 'wb')
+    actor_sentences_output_file = open("actor_sentences.txt", 'w')
     for review in review_data:
         for actor in review["actor_info"]:
             if len(actor["sentences"]) == 0:
