@@ -22,14 +22,16 @@ def cleanForView(string):
     return stringA.strip().lower()
     
 def getSentimentCNN(fileToLoad, modelDir):
+    os.chdir("./DNN-sentiment")
+
     checkpoint_dir = "./runs/"+modelDir+"/checkpoints/"
     batch_size = 64
     x_test, y_test, vocabulary, vocabulary_inv,trainS = data_helpers.load_data_for_books("./data/"+fileToLoad+".txt")
     y_test = np.argmax(y_test, axis=1)
-    print("Vocabulary size: {:d}".format(len(vocabulary)))
-    print("Test set size {:d}".format(len(y_test)))
+    # print("Vocabulary size: {:d}".format(len(vocabulary)))
+    # print("Test set size {:d}".format(len(y_test)))
 
-    print("checkpoint dir", checkpoint_dir)
+    # print("checkpoint dir", checkpoint_dir)
     
     checkpoint_file = tf.train.latest_checkpoint(checkpoint_dir)
     graph = tf.Graph()
@@ -40,7 +42,7 @@ def getSentimentCNN(fileToLoad, modelDir):
         sess = tf.Session(config=session_conf)
         with sess.as_default():
             # Load the saved meta graph and restore variables
-            print("checkpoint file", checkpoint_file)
+            # print("checkpoint file", checkpoint_file)
 
             saver = tf.train.import_meta_graph("{}.meta".format(checkpoint_file))
             saver.restore(sess, checkpoint_file)
@@ -68,8 +70,11 @@ def getSentimentCNN(fileToLoad, modelDir):
                 
     mbs = float(len(all_predictions[all_predictions == 1]))/len(all_predictions)
     mss = np.mean(all_scores)
-    print("Mean Binary Sentiment",mbs)
-    print("Mean Smooth Sentiment",mss)
+    # print("Mean Binary Sentiment",mbs)
+    # print("Mean Smooth Sentiment",mss)
+
+    os.chdir('./..')
+    
     return all_predictions,all_scores
     
 def getSentimentRNN(fileToLoad,modelDir):
@@ -128,7 +133,7 @@ def getSentimentRNN(fileToLoad,modelDir):
 
         
 def saveSentiment(fileToSave,all_predictions,all_scores):
-    text = ''.join(open("./data/"+fileToSave+".txt").readlines())
+    text = ''.join(open("./DNN-Sentiment/data/"+fileToSave+".txt").readlines())
 
     tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
     book = tokenizer.tokenize(text)
@@ -136,12 +141,12 @@ def saveSentiment(fileToSave,all_predictions,all_scores):
     toOut = zip(book,all_predictions,all_scores)
     
     import unicodecsv as csv
-    myfile = open(fileToSave+'.csv', 'wb')
+    myfile = open("./DNN-Sentiment/data/"+fileToSave+'.csv', 'wb')
     wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
     wr.writerow(["Text","Binary_Sentiment","Cont_Sentiment"])
     for row in toOut:
         wr.writerow(row)
-    print("Saved",fileToSave+'.csv')
+    # print("Saved",fileToSave+'.csv')
     
 # arguments = sys.argv
 # book = arguments[1]

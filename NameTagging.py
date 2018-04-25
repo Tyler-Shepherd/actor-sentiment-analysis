@@ -1,5 +1,7 @@
 import requests
 from pprint import pprint
+from imdb import IMDb
+from difflib import SequenceMatcher
 
 
 # Gets all named entities of type PER in the given review text
@@ -26,3 +28,15 @@ def name_tagging(review_text):
 			named_entities.add(entity["mention_head"])
 
 	return named_entities
+
+def is_actor(entity_name):
+	# TODO: could compile all top results, compute coherence between results
+
+
+	ia = IMDb()
+
+	for person in ia.search_person(entity_name):
+		if SequenceMatcher(None, person['name'], entity_name).ratio() >= 0.8:
+			return True
+
+	return False

@@ -127,7 +127,6 @@ def load_data_for_books(path):
 	sentences_padded = pad_sentences(sentences)
     
     
-    
 	sentencesT, labelsT = load_data_and_labels()
 	sentences_paddedT = pad_sentences(sentencesT)
 	vocabulary, vocabulary_inv = build_vocab(sentences_paddedT)
