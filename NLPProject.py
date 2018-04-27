@@ -6,7 +6,7 @@ import LexiconSentimentAnalysis
 import NLPParsing
 import ReadDNNResults
 
-sys.path.insert(0, './DNN-Sentiment')
+sys.path.insert(0, './lib/DNN-Sentiment')
 
 import getSentiment
 
@@ -20,7 +20,7 @@ if __name__ == "__main__":
     review_filename = sys.argv[1]
     algo_type = sys.argv[2]
 
-    review_file = open(review_filename, "r")
+    review_file = open("./data/examples/"+review_filename, "r")
 
     review = ""
 
@@ -34,7 +34,7 @@ if __name__ == "__main__":
 
     per_entities = NameTagging.name_tagging(review)
 
-    print("per entities", per_entities, flush = True)
+    print("PER entities", per_entities, flush = True)
 
     named_entities = [i for i in per_entities if NameTagging.is_actor(i)]
 
@@ -47,7 +47,7 @@ if __name__ == "__main__":
     # Write actor sentences to file needed for RNN and CNN
     if algo_type == "-r" or algo_type == "-c":
         # write to file for DNN-Sentiment to read
-        output_file = open("./DNN-Sentiment/data/actor_sentences.txt", "w")
+        output_file = open("./lib/DNN-Sentiment/data/actor_sentences.txt", "w")
         for entity in named_entities:
             actor_sentences = NLPParsing.get_actor_sentences(entity, review)
 
@@ -71,6 +71,6 @@ if __name__ == "__main__":
             sentiment = LexiconSentimentAnalysis.GetSentiment(entity, review)
         elif algo_type == "-r" or algo_type == "-c":
             actor_sentences = NLPParsing.get_actor_sentences(entity, review)
-            sentiment = ReadDNNResults.GetSentiment("./DNN-Sentiment/data/actor_sentences.csv", actor_sentences)
+            sentiment = ReadDNNResults.GetSentiment("./lib/DNN-Sentiment/data/actor_sentences.csv", actor_sentences)
 
         print(entity, sentiment, flush=True)

@@ -108,10 +108,10 @@ if __name__ == "__main__":
 	review_data, _, _ = NLPParsing.get_review_data()
 	train_data, test_data = NLPParsing.split_train_and_test(review_data)
 
-	CNN_accuracy = compute_DNN_accuracy("actor_sentences_CNN.csv", test_data)
+	CNN_accuracy = compute_DNN_accuracy("./data/actor_sentences_CNN.csv", test_data)
 
 	print("CNN accuracy", CNN_accuracy)
 
-	RNN_accuracy = compute_DNN_accuracy("actor_sentences_RNN.csv", test_data)
+	RNN_accuracy = compute_DNN_accuracy("./data/actor_sentences_RNN.csv", test_data)
 
 	print("RNN accuracy", RNN_accuracy)

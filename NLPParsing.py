@@ -62,7 +62,7 @@ def get_review_data():
     # "sentences" gives list of sentences that contain the actors name
     # "sentiment" gives -1/0/1 as reported by turk
 
-    with open("Turk_Results.csv", 'r') as csvfile:
+    with open("data/Turk_Results.csv", 'r') as csvfile:
         spamreader = csv.reader(csvfile)
         for row in spamreader:
             counter += 1
@@ -240,28 +240,28 @@ if __name__ == "__main__":
     actor_g = sorted(actor_identifier.items(), key = itemgetter(1))
 
     # Print word ids
-    output_file = open("word_id.txt", 'w')
+    output_file = open("data/word_id.txt", 'w')
     for each in g:
         str_line = each[0] + " " + str(each[1]) + "\n"
         output_file.write(str_line)
     output_file.close()
 
     # Print actor ids
-    actor_output_file = open("actor_id.txt", 'w')
+    actor_output_file = open("data/actor_id.txt", 'w')
     for actor in actor_g:
         str_line = actor[0] + " " + str(actor[1]) + "\n"
         actor_output_file.write(str_line)
     actor_output_file.close()
 
     # Print all review text
-    review_output_file = open("movie_reviews.txt", 'w')
+    review_output_file = open("data/movie_reviews.txt", 'w')
     for review in review_data:
         rev_line = review["review"] +"\n"
         review_output_file.write(rev_line)
     review_output_file.close()
 
     # Print sentences each actor is in
-    actor_sentences_output_file = open("actor_sentences.txt", 'w')
+    actor_sentences_output_file = open("data/actor_sentences.txt", 'w')
     for review in review_data:
         for actor in review["actor_info"]:
             if len(actor["sentences"]) == 0:
@@ -281,19 +281,10 @@ if __name__ == "__main__":
     print("Num train", len(train_data))
     print("Num test", len(test_data))
 
-    num_positive, num_neutral, num_negative = print_data_output("actor_train.txt", train_data)
+    num_positive, num_neutral, num_negative = print_data_output("data/actor_train.txt", train_data)
 
     print("Train data (positive, neutral, negative)", num_positive, num_neutral, num_negative)
 
-    num_positive, num_neutral, num_negative = print_data_output("actor_test.txt", test_data)
+    num_positive, num_neutral, num_negative = print_data_output("data/actor_test.txt", test_data)
 
     print("Test data (positive, neutral, negative)", num_positive, num_neutral, num_negative)
-
-    # Name tagging
-    # Gets all named entities of type PER in the review
-    # Currently unused
-    # Could use entity linking to determine whether each of these are an actor
-
-    # for review in all_reviews:
-    #     named_entities = name_tagging.name_tagging(review)
-    #     print(named_entities)

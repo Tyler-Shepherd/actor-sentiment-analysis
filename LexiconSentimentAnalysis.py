@@ -6,7 +6,7 @@ import NLPParsing
 
 
 def read_lexicon():
-	lexicon = open('SentiWordNet/SentiWordNet.txt')
+	lexicon = open('lib/SentiWordNet/SentiWordNet.txt')
 
 	term_to_data = {}
 
