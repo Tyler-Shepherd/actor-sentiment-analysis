@@ -1,0 +1,6 @@
+model_checkpoint_path: "my_model-360"
+all_model_checkpoint_paths: "my_model-264"
+all_model_checkpoint_paths: "my_model-288"
+all_model_checkpoint_paths: "my_model-312"
+all_model_checkpoint_paths: "my_model-336"
+all_model_checkpoint_paths: "my_model-360"

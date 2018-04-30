@@ -98,6 +98,7 @@ if __name__ == "__main__":
             aspect_line = entity + "\n"
             sentiment_line = "0"
             output_file.write(rev_line + aspect_line + sentiment_line +"\n")
+    #To ensure that the attention network LSTM model works, add three random reviews to end of the test dataset.
     if algo_type == "-a":
         positive = "$T$ did a phenomenal job in black panther which overall was a solid movie but a little bit overhyped. the rest of the cast was great but i was mostly excited to watch him.\n"
         positive += "chadwick boseman\n" + "1\n"
