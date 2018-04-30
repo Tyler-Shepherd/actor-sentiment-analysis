@@ -3,6 +3,10 @@ from pprint import pprint
 from operator import itemgetter
 import math
 import NameTagging
+import sys
+from subprocess import call
+import os
+
 
 # Amartya's column numbers
 # has_actor_col = -1
@@ -210,6 +214,32 @@ def split_train_and_test(review_data):
 
 
 
+# def coreference_text(review):
+#     # copyfile(review_filename, "./lib/book-nlp-master/data/reviews/review.txt")
+
+#     output_file = open("./lib/book-nlp-master/data/reviews/review.txt", "w")
+#     output_file.write(review)
+#     output_file.close()
+
+#     os.chdir(".\\lib\\book-nlp-master")
+
+#     #os.system("C:\Users\shepht2\Documents\School\Natural_Language_Processing\project\\actor-sentiment-analysis\lib\\book-nlp-master\\runjava novels/BookNLP -doc data/reviews/review.txt -printHTML -p data/output/review -tok data/tokens/review.tokens -f")
+
+#     # call(["C:\\Users\\shepht2\\Documents\\School\\Natural_Language_Processing\\project\\actor-sentiment-analysis\\lib\\book-nlp-master\\runjava.exe", "novels\\BookNLP", "-doc", "data\\reviews\\review.txt", "-printHTML", "-p", "data\\output\\review", "-tok", "data\\tokens\\review.tokens", "-f"], shell=True)
+
+#     # call(["runjava", "novels\\BookNLP", "-doc", "data\\reviews\\review.txt", "-printHTML", "-p", "data\\output\\review", "-tok", "data\\tokens\\review.tokens", "-f"], shell=True)
+
+#     # call(["\\cygdrive\\c\\Users\\shepht2\\Documents\\School\\Natural_Language_Processing\\project\\actor-sentiment-analysis\\lib\\book-nlp-master\\runjava", "novels\\BookNLP", "-doc", "data\\reviews\\review.txt", "-printHTML", "-p", "data\\output\\review", "-tok", "data\\tokens\\review.tokens", "-f"], shell=True)
+
+
+#     os.chdir("./../..")
+
+
+
+
+
+
+
 # Returns list of sentences containing actor_name from the review
 def get_actor_sentences(actor_name, review):
     sentences = review.split('.')
@@ -232,8 +262,9 @@ def get_actor_sentences(actor_name, review):
 
 
 
+
+# Run this file itself to run all functions and parse all data
 if __name__ == "__main__":
-    # lis_movies, lis_actor_sentences, word_identifier, actor_identifier, all_reviews, actor_and_review = get_review_data()
     review_data, word_identifier, actor_identifier = get_review_data()
 
     g = sorted(word_identifier.items(), key=itemgetter(1))
@@ -256,6 +287,8 @@ if __name__ == "__main__":
     # Print all review text
     review_output_file = open("data/movie_reviews.txt", 'w')
     for review in review_data:
+        # coreference_text(review["review"])
+        # sys.exit(0)
         rev_line = review["review"] +"\n"
         review_output_file.write(rev_line)
     review_output_file.close()

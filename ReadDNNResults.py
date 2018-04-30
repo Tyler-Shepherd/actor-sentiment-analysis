@@ -63,11 +63,11 @@ def GetSentiment(csv_file, actor_sentences):
 	# Normalize, get avg sentiment per sentence
 	pred_sentiment = float(pred_sentiment) / num_sentences
 
-	# print(pred_sentiment)	
+	# print(pred_sentiment)
 
-	if pred_sentiment >= mean + 0.25 * abs(mean):
+	if pred_sentiment >= mean + 0.5 * stdev: #0.5 * abs(mean):
 		return 1
-	elif pred_sentiment <= mean - 0.25 * abs(mean):
+	elif pred_sentiment <= mean - 0.5 * stdev: #0.5 * abs(mean):
 		return -1
 	else:
 		return 0

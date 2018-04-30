@@ -11,8 +11,9 @@ from subprocess import call
 sys.path.insert(0, './lib/DNN-Sentiment')
 
 import getSentiment
-sys.path.insert(0, './lib/LSTM/reviews')
-import actorReview
+
+#sys.path.insert(0, './lib/LSTM/reviews')
+#import actorReview
 
 if __name__ == "__main__":
     if len(sys.argv) <= 2:

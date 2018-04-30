@@ -32,7 +32,6 @@ def name_tagging(review_text):
 def is_actor(entity_name):
 	# TODO: could compile all top results, compute coherence between results
 
-
 	ia = IMDb()
 
 	for person in ia.search_person(entity_name):
