@@ -91,11 +91,11 @@ def getSentimentRNN(fileToLoad,modelDir):
 
     x_test = np.fliplr(x_test)
 
-    print("checkpoint:", checkpoint_dir)
+    # print("checkpoint:", checkpoint_dir)
     
     checkpoint_file = tf.train.latest_checkpoint(checkpoint_dir)
 
-    print("checkpoint file:" ,checkpoint_file)
+    # print("checkpoint file:" ,checkpoint_file)
 
     graph = tf.Graph()
     with graph.as_default():

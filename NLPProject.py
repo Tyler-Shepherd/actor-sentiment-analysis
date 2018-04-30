@@ -25,7 +25,7 @@ if __name__ == "__main__":
     algo_type = sys.argv[2]
 
     review_file = open("./data/examples/"+review_filename, "r")
-    output_file = open("./lib/LSTM/data/actors/new_review.txt", "w")
+    
 
     review = ""
 
@@ -71,6 +71,11 @@ if __name__ == "__main__":
             getSentiment.saveSentiment("actor_sentences",all_predictions,all_scores)
 
 
+    if algo_type == "-a":
+        output_file = open("./lib/LSTM/data/actors/new_review.txt", "w")
+
+
+
     for entity in named_entities:
         if algo_type == "-l":
             sentiment = LexiconSentimentAnalysis.GetSentiment(entity, review)
@@ -109,6 +114,7 @@ if __name__ == "__main__":
         terrible = "$T$ did a horrible job in black panther which overall was a solid movie but a little bit overhyped. the rest of the cast was great but i was mostly excited to watch him.\n"
         terrible += "johnny adams\n" + "-1\n"
         output_file.write(terrible)
-    output_file.close()
-    os.chdir("lib/LSTM/reviews")
-    call(["py", "-3", "actorReview.py"])
+
+        output_file.close()
+        os.chdir("lib/LSTM/reviews")
+        call(["py", "-3", "actorReview.py"])
