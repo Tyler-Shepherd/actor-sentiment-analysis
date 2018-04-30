@@ -12,6 +12,7 @@ from utils import load_w2v, batch_index, load_word_embedding, load_aspect2id, lo
 
 
 FLAGS = tf.app.flags.FLAGS
+#Flags which are set for the LSTM intiialization.
 tf.app.flags.DEFINE_integer('embedding_dim', 100, 'dimension of word embedding')
 tf.app.flags.DEFINE_integer('batch_size', 25, 'number of example per batch')
 tf.app.flags.DEFINE_integer('n_hidden', 300, 'number of hidden unit')
@@ -36,7 +37,7 @@ tf.app.flags.DEFINE_string('t', 'last', 'model type: ')
 
 
 class LSTM(object):
-
+    #Initialize the LSTM class.
     def __init__(self, embedding_dim=100, batch_size=64, n_hidden=100, learning_rate=0.01,
                  n_class=3, max_sentence_len=50, l2_reg=0., display_step=4, n_iter=100, type_=''):
         self.embedding_dim = embedding_dim
@@ -302,8 +303,10 @@ class LSTM(object):
             saved_path = "-48"
             saver = tf.train.Saver()
             directory = "/Users/chakra2/Documents/NLP/TD-LSTM-master/models/logs/1525029580_-d1-1.0d2-1.0b-50r-0.0001l2-0.001sen-2200dim-100h-300c-3/my_model-360"
+            #Restore the trained model so predictions can be made for new unseen reviews.
             saver.restore(sess, directory)
             acc, cnt = 0., 0
+            #Go through the batch dataset and make the prediction.
             for test, num in self.get_batch_data(te_x, te_sen_len, te_y, te_target_word, 2000, 1.0, 1.0, False):
                 _acc,ty, py = sess.run([accuracy, true_y,pred_y],feed_dict=test)
                 acc += _acc
@@ -315,31 +318,35 @@ class LSTM(object):
                     alpha = alpha
                     ty = ty
                     py = py'''
-            print('all samples={}, correct prediction={}'.format(cnt, acc), flush=True)
-            print(py)
+            #print('all samples={}, correct prediction={}'.format(cnt, acc), flush=True)
+            #In order to get model to work, there must be at least one actor who is given each of the three possible review types.
+            #These were placed as the last three entries in the input file so we do not need to see these predictions when getting the
+            #predictions on the new dataset.
+            print('There were a total of {} actors in the given review dataset'.format(cnt - 3, flush=True))
+            print(py[:len(py) - 3])
             #test_summary_writer.add_summary(summary, step)
             #saver.save(sess, save_dir, global_step=step)
-            print('test acc={:.6f}'.format(acc / cnt), flush = True)
+            #print('test acc={:.6f}'.format(acc / cnt), flush = True)
             if acc / cnt > max_acc:
                 max_acc = acc / cnt
                 #max_alpha = alpha
                 max_ty = ty
                 max_py = py
 
-            print('Optimization Finished! Max acc={}'.format(max_acc), flush = True)
+            #print('Optimization Finished! Max acc={}'.format(max_acc), flush = True)
             '''fp = open('weight.txt', 'w')
             for y1, y2, ws in zip(max_ty, max_py, max_alpha):
                 fp.write(str(y1) + ' ' + str(y2) + ' ' + ' '.join([str(w) for w in ws]) + '\n')'''
 
-            print('Learning_rate={}, iter_num={}, batch_size={}, hidden_num={}, l2={}'.format(
+            '''print('Learning_rate={}, iter_num={}, batch_size={}, hidden_num={}, l2={}'.format(
                 self.learning_rate,
                 self.n_iter,
                 self.batch_size,
                 self.n_hidden,
                 self.l2_reg
-            ), flush = True)
+            ), flush = True)'''
 
-    def get_batch_data(self, x, sen_len, y, target_words, batch_size, keep_prob1, keep_prob2, is_shuffle=True):
+    def get_batch_data(self, x, sen_len, y, target_words, batch_size, keep_prob1, keep_prob2, is_shuffle=False):
         for index in batch_index(len(y), batch_size, 1, is_shuffle):
             feed_dict = {
                 self.x: x[index],
