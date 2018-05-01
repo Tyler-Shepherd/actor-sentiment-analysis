@@ -34,3 +34,4 @@ word embedding: 100
 
 
 Some incorrectly formatted from Turk (i.e. didn't include sentiment)
+DNN-Sentiment is designed for "analyzing of sentinment of large text documents, such as works of literature"

@@ -79,11 +79,11 @@ if __name__ == "__main__":
     for entity in named_entities:
         if algo_type == "-l":
             sentiment = LexiconSentimentAnalysis.GetSentiment(entity, review)
-            print(entity, sentiment, flush=True)
+            print(entity, ": ", NLPParsing.int_to_sentiment(sentiment), flush=True)
         elif algo_type == "-r" or algo_type == "-c":
             actor_sentences = NLPParsing.get_actor_sentences(entity, review)
             sentiment = ReadDNNResults.GetSentiment("./lib/DNN-Sentiment/data/actor_sentences.csv", actor_sentences)
-            print(entity, sentiment, flush=True)
+            print(entity, ": ", NLPParsing.int_to_sentiment(sentiment), flush=True)
         elif algo_type == "-a":
             rev_line = review.replace(entity,"$T$")
             rev_line = rev_line.replace(entity.lower(), "$T$")
@@ -103,6 +103,7 @@ if __name__ == "__main__":
             aspect_line = entity + "\n"
             sentiment_line = "0"
             output_file.write(rev_line + aspect_line + sentiment_line +"\n")
+
     #To ensure that the attention network LSTM model works, add three random reviews to end of the test dataset.
     if algo_type == "-a":
         positive = "$T$ did a phenomenal job in black panther which overall was a solid movie but a little bit overhyped. the rest of the cast was great but i was mostly excited to watch him.\n"
