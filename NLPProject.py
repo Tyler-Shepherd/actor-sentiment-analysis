@@ -11,9 +11,8 @@ from subprocess import call
 sys.path.insert(0, './lib/DNN-Sentiment')
 
 import getSentiment
-
-#sys.path.insert(0, './lib/LSTM/reviews')
-#import actorReview
+sys.path.insert(0, './lib/LSTM/reviews')
+import actorReview
 
 if __name__ == "__main__":
     if len(sys.argv) <= 2:
@@ -25,7 +24,6 @@ if __name__ == "__main__":
     algo_type = sys.argv[2]
 
     review_file = open("./data/examples/"+review_filename, "r")
-    
 
     review = ""
 
@@ -69,21 +67,17 @@ if __name__ == "__main__":
         else:
             all_predictions,all_scores = getSentiment.getSentimentCNN("actor_sentences",'1524270913')
             getSentiment.saveSentiment("actor_sentences",all_predictions,all_scores)
-
-
-    if algo_type == "-a":
+    elif algo_type == "-a":
         output_file = open("./lib/LSTM/data/actors/new_review.txt", "w")
-
-
 
     for entity in named_entities:
         if algo_type == "-l":
             sentiment = LexiconSentimentAnalysis.GetSentiment(entity, review)
-            print(entity, ": ", NLPParsing.int_to_sentiment(sentiment), flush=True)
+            print(entity, sentiment, flush=True)
         elif algo_type == "-r" or algo_type == "-c":
             actor_sentences = NLPParsing.get_actor_sentences(entity, review)
             sentiment = ReadDNNResults.GetSentiment("./lib/DNN-Sentiment/data/actor_sentences.csv", actor_sentences)
-            print(entity, ": ", NLPParsing.int_to_sentiment(sentiment), flush=True)
+            print(entity, sentiment, flush=True)
         elif algo_type == "-a":
             rev_line = review.replace(entity,"$T$")
             rev_line = rev_line.replace(entity.lower(), "$T$")
@@ -98,24 +92,24 @@ if __name__ == "__main__":
 
             while "$T$ $T$" in rev_line:
                 rev_line = rev_line.replace("$T$ $T$", "$T$")
-            rev_line += '\n'
-
-            aspect_line = entity + "\n"
-            sentiment_line = "0"
-            output_file.write(rev_line + aspect_line + sentiment_line +"\n")
-
+            rev_line = rev_line.split(".")
+            for sen in rev_line:
+                if "$T$" in sen:
+                    sen += '\n'
+                    aspect_line = entity + "\n"
+                    sentiment_line = "0"
+                    output_file.write(sen + aspect_line + sentiment_line +"\n")
     #To ensure that the attention network LSTM model works, add three random reviews to end of the test dataset.
     if algo_type == "-a":
-        positive = "$T$ did a phenomenal job in black panther which overall was a solid movie but a little bit overhyped. the rest of the cast was great but i was mostly excited to watch him.\n"
+        positive = "$T$ did a phenomenal job in black panther which overall was a solid movie but a little bit overhyped..\n"
         positive += "chadwick boseman\n" + "1\n"
         output_file.write(positive)
-        neutral = "$T$ did a mediocre job in black panther which overall was a solid movie but a little bit overhyped. the rest of the cast was great but i was mostly excited to watch him.\n"
+        neutral = "$T$ did a mediocre job in black panther which overall was a solid movie but a little bit overhyped.\n"
         neutral += "mark jones\n" +  "0\n"
         output_file.write(neutral)
-        terrible = "$T$ did a horrible job in black panther which overall was a solid movie but a little bit overhyped. the rest of the cast was great but i was mostly excited to watch him.\n"
+        terrible = "$T$ did a horrible job in black panther which overall was a solid movie but a little bit overhyped.\n"
         terrible += "johnny adams\n" + "-1\n"
         output_file.write(terrible)
-
         output_file.close()
         os.chdir("lib/LSTM/reviews")
         call(["py", "-3", "actorReview.py"])
