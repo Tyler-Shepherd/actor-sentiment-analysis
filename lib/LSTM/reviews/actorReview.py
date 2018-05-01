@@ -282,14 +282,14 @@ class LSTM(object):
             if not os.path.exists(save_dir):
                 os.makedirs(save_dir)
 
-            tr_x, tr_sen_len, tr_target_word, tr_y = load_inputs_twitter_at(
+            tr_x, tr_sen_len, tr_target_word, tr_y, train_names = load_inputs_twitter_at(
                 FLAGS.train_file_path,
                 self.word_id_mapping,
                 self.aspect_id_mapping,
                 self.max_sentence_len,
                 self.type_
             )
-            te_x, te_sen_len, te_target_word, te_y = load_inputs_twitter_at(
+            te_x, te_sen_len, te_target_word, te_y, test_names = load_inputs_twitter_at(
                 FLAGS.test_file_path,
                 self.word_id_mapping,
                 self.aspect_id_mapping,
@@ -299,54 +299,36 @@ class LSTM(object):
 
             max_acc = 0.
             max_alpha = None
+            py = []
             max_ty, max_py = None, None
             saved_path = "-48"
             saver = tf.train.Saver()
             #directory = "/Users/chakra2/Documents/NLP/TD-LSTM-master/models/logs/1525029580_-d1-1.0d2-1.0b-50r-0.0001l2-0.001sen-2200dim-100h-300c-3/my_model-360"
-            directory = "C:\\Users\\shepht2\\Documents\\School\\Natural_Language_Processing\\project\\actor-sentiment-analysis\\lib\\LSTM\\models\\logs\\1525029580_-d1-1.0d2-1.0b-50r-0.0001l2-0.001sen-2200dim-100h-300c-3\\my_model-360"
+            directory = "/Users/chakra2/Documents/actor-sentiment-analysis-master/lib/LSTM/models/logs/1525206908_-d1-1.0d2-1.0b-50r-0.1l2-0.001sen-130dim-100h-300c-3/my_model-675"
 
             #Restore the trained model so predictions can be made for new unseen reviews.
             saver.restore(sess, directory)
             acc, cnt = 0., 0
+            term_classifier = dict()
             #Go through the batch dataset and make the prediction.
+
             for test, num in self.get_batch_data(te_x, te_sen_len, te_y, te_target_word, 2000, 1.0, 1.0, False):
-                _acc,ty, py = sess.run([accuracy, true_y,pred_y],feed_dict=test)
+                _acc,ty, py,p = sess.run([accuracy, true_y,pred_y, prob],feed_dict={self.x: te_x, self.y: te_y, self.sen_len: te_sen_len, self.aspect_id: te_target_word, self.keep_prob1:1.0, self.keep_prob2: 1.0})
+                #_acc,ty, py,p = sess.run([accuracy, true_y,pred_y, prob],feed_dict=test)
                 acc += _acc
                 cnt += num
-                '''if flag:
-                    summary = _summary
-                    step = _step
-                    flag = False
-                    alpha = alpha
-                    ty = ty
-                    py = py'''
+                last_three = ty[len(ty) - 3:]
+                predicted_terms = ty[:3]
+                possible_terms = ["Positive", "Neutral", "Negative"]
+                for a in range(0, 3):
+                    term_classifier[last_three[a]] = possible_terms[a]
+
+                for b in range(0, 3):
+                    print("For actor {}, the sentiment is {} ".format(test_names[b], term_classifier[py[b]]))
             #print('all samples={}, correct prediction={}'.format(cnt, acc), flush=True)
             #In order to get model to work, there must be at least one actor who is given each of the three possible review types.
             #These were placed as the last three entries in the input file so we do not need to see these predictions when getting the
             #predictions on the new dataset.
-            print('There were a total of {} actors in the given review dataset'.format(cnt - 3, flush=True))
-            print(py[:len(py) - 3])
-            #test_summary_writer.add_summary(summary, step)
-            #saver.save(sess, save_dir, global_step=step)
-            #print('test acc={:.6f}'.format(acc / cnt), flush = True)
-            if acc / cnt > max_acc:
-                max_acc = acc / cnt
-                #max_alpha = alpha
-                max_ty = ty
-                max_py = py
-
-            #print('Optimization Finished! Max acc={}'.format(max_acc), flush = True)
-            '''fp = open('weight.txt', 'w')
-            for y1, y2, ws in zip(max_ty, max_py, max_alpha):
-                fp.write(str(y1) + ' ' + str(y2) + ' ' + ' '.join([str(w) for w in ws]) + '\n')'''
-
-            '''print('Learning_rate={}, iter_num={}, batch_size={}, hidden_num={}, l2={}'.format(
-                self.learning_rate,
-                self.n_iter,
-                self.batch_size,
-                self.n_hidden,
-                self.l2_reg
-            ), flush = True)'''
 
     def get_batch_data(self, x, sen_len, y, target_words, batch_size, keep_prob1, keep_prob2, is_shuffle=False):
         for index in batch_index(len(y), batch_size, 1, is_shuffle):
