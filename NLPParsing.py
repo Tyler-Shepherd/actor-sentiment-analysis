@@ -158,25 +158,30 @@ def print_data_output(filename, data):
 
         actor_name = actor["name"]
 
-        # Convert actor names to $T$
-        rev_line = review.replace(actor_name,"$T$")
-        rev_line = rev_line.replace(actor_name.lower(), "$T$")
+        actor_sentences = get_actor_sentences(actor_name, review)
 
-        # Replace all mentions of just one word in the actors name (i.e. their last name)
-        for word in actor_name.split():
-            if len(word) < 2:
-                # Ignore single letters (like an initial)
-                continue
-            rev_line = rev_line.replace(word, "$T$")
-            rev_line = rev_line.replace(word, "$T$")
+        for sen in actor_sentences:
+            # Convert actor names to $T$
+            rev_line = sen.replace(actor_name,"$T$")
+            rev_line = rev_line.replace(actor_name.lower(), "$T$")
 
-        while "$T$ $T$" in rev_line:
-            rev_line = rev_line.replace("$T$ $T$", "$T$")
+            # Replace all mentions of just one word in the actors name (i.e. their last name)
+            for word in actor_name.split():
+                if len(word) < 2:
+                    # Ignore single letters (like an initial)
+                    continue
+                rev_line = rev_line.replace(word, "$T$")
+                rev_line = rev_line.replace(word, "$T$")
 
-        rev_line += '\n'
+            while "$T$ $T$" in rev_line:
+                rev_line = rev_line.replace("$T$ $T$", "$T$")
 
-        aspect_line = actor_name + "\n"
-        sentiment_line = str(actor["sentiment"]) + "\n"
+            rev_line += '\n'
+
+            aspect_line = actor_name + "\n"
+            sentiment_line = str(actor["sentiment"]) + "\n"
+
+            output_file.write(rev_line + aspect_line + sentiment_line)
 
         if actor["sentiment"] == 1:
             num_positive += 1
@@ -185,7 +190,7 @@ def print_data_output(filename, data):
         elif actor["sentiment"] == -1:
             num_negative += 1
 
-        output_file.write(rev_line + aspect_line + sentiment_line)
+        
     output_file.close()
 
     return num_positive, num_neutral, num_negative
@@ -211,31 +216,6 @@ def split_train_and_test(review_data):
     test_data = full_data[num_train:]
 
     return train_data, test_data
-
-
-
-# def coreference_text(review):
-#     # copyfile(review_filename, "./lib/book-nlp-master/data/reviews/review.txt")
-
-#     output_file = open("./lib/book-nlp-master/data/reviews/review.txt", "w")
-#     output_file.write(review)
-#     output_file.close()
-
-#     os.chdir(".\\lib\\book-nlp-master")
-
-#     #os.system("C:\Users\shepht2\Documents\School\Natural_Language_Processing\project\\actor-sentiment-analysis\lib\\book-nlp-master\\runjava novels/BookNLP -doc data/reviews/review.txt -printHTML -p data/output/review -tok data/tokens/review.tokens -f")
-
-#     # call(["C:\\Users\\shepht2\\Documents\\School\\Natural_Language_Processing\\project\\actor-sentiment-analysis\\lib\\book-nlp-master\\runjava.exe", "novels\\BookNLP", "-doc", "data\\reviews\\review.txt", "-printHTML", "-p", "data\\output\\review", "-tok", "data\\tokens\\review.tokens", "-f"], shell=True)
-
-#     # call(["runjava", "novels\\BookNLP", "-doc", "data\\reviews\\review.txt", "-printHTML", "-p", "data\\output\\review", "-tok", "data\\tokens\\review.tokens", "-f"], shell=True)
-
-#     # call(["\\cygdrive\\c\\Users\\shepht2\\Documents\\School\\Natural_Language_Processing\\project\\actor-sentiment-analysis\\lib\\book-nlp-master\\runjava", "novels\\BookNLP", "-doc", "data\\reviews\\review.txt", "-printHTML", "-p", "data\\output\\review", "-tok", "data\\tokens\\review.tokens", "-f"], shell=True)
-
-
-#     os.chdir("./../..")
-
-
-
 
 
 
@@ -287,8 +267,6 @@ if __name__ == "__main__":
     # Print all review text
     review_output_file = open("data/movie_reviews.txt", 'w')
     for review in review_data:
-        # coreference_text(review["review"])
-        # sys.exit(0)
         rev_line = review["review"] +"\n"
         review_output_file.write(rev_line)
     review_output_file.close()
@@ -311,8 +289,8 @@ if __name__ == "__main__":
     train_data, test_data = split_train_and_test(review_data)
 
     print("Num data:", len(train_data) + len(test_data))
-    print("Num train", len(train_data))
-    print("Num test", len(test_data))
+    print("Num train:", len(train_data))
+    print("Num test:", len(test_data))
 
     num_positive, num_neutral, num_negative = print_data_output("data/actor_train.txt", train_data)
 

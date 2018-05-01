@@ -103,7 +103,7 @@ def compute_DNN_accuracy(csv_file, test_data):
 
 
 
-
+# Run this file to test CNN and RNN accuracy on test data
 if __name__ == "__main__":
 	review_data, _, _ = NLPParsing.get_review_data()
 	train_data, test_data = NLPParsing.split_train_and_test(review_data)

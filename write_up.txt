@@ -21,9 +21,8 @@ Test data: 296 (actor, review, sentiment) data points
 
 
 
-Runtime of train_cnn.py (for sentiment analysis): 149m 24.021s
-Runtime of train_rnn.py (1000 iterations): 16m 55.333s
-
+Runtime of train_cnn.py (      iterations): 155m32.639s
+Runtime of train_rnn.py (10000 iterations): 125m33.788s
 
 
 
