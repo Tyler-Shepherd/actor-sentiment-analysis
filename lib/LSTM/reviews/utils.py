@@ -154,6 +154,8 @@ def load_inputs_twitter(input_file, word_id_file, sentence_len, type_='', encodi
             sen_len.append(len(words))
             x.append(words + [0] * (sentence_len - len(words)))
 
+    print(target_words)
+
     y = change_y_to_onehot(y)
     if type_ == 'TD':
         return np.asarray(x), np.asarray(sen_len), np.asarray(x_r), \
@@ -191,9 +193,11 @@ def load_inputs_twitter_at(input_file, word_id_file, aspect_id_file, sentence_le
 
     x, y, sen_len = [], [], []
     aspect_words = []
+    entity_names = []
     lines = open(input_file).readlines()
     for i in range(0, len(lines), 3):
         aspect_word = ' '.join(lines[i + 1].lower().split())
+        entity_names.append(aspect_word)
         aspect_words.append(aspect_to_id.get(aspect_word, 0))
 
         y.append(lines[i + 2].split()[0])
@@ -218,4 +222,4 @@ def load_inputs_twitter_at(input_file, word_id_file, aspect_id_file, sentence_le
             print('aaaaa=', len(item), flush = True)
     x = np.asarray(x, dtype=np.int32)
 
-    return x, np.asarray(sen_len), np.asarray(aspect_words), np.asarray(y)
+    return x, np.asarray(sen_len), np.asarray(aspect_words), np.asarray(y), entity_names
