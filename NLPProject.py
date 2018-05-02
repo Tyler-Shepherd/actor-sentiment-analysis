@@ -11,6 +11,8 @@ from subprocess import call
 sys.path.insert(0, './lib/DNN-Sentiment')
 
 import getSentiment
+
+
 sys.path.insert(0, './lib/LSTM/reviews')
 import actorReview
 
@@ -73,11 +75,11 @@ if __name__ == "__main__":
     for entity in named_entities:
         if algo_type == "-l":
             sentiment = LexiconSentimentAnalysis.GetSentiment(entity, review)
-            print(entity, sentiment, flush=True)
+            print(entity, ": ", NLPParsing.int_to_sentiment(sentiment), flush=True)
         elif algo_type == "-r" or algo_type == "-c":
             actor_sentences = NLPParsing.get_actor_sentences(entity, review)
             sentiment = ReadDNNResults.GetSentiment("./lib/DNN-Sentiment/data/actor_sentences.csv", actor_sentences)
-            print(entity, sentiment, flush=True)
+            print(entity, ": ", NLPParsing.int_to_sentiment(sentiment), flush=True)
         elif algo_type == "-a":
             rev_line = review.replace(entity,"$T$")
             rev_line = rev_line.replace(entity.lower(), "$T$")

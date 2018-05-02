@@ -150,6 +150,8 @@ def print_data_output(filename, data):
     num_negative = 0
     num_neutral = 0
 
+    max_sen_len = 0
+
     for i in range(len(data)):
         data_point = data[i]
 
@@ -181,6 +183,8 @@ def print_data_output(filename, data):
             aspect_line = actor_name + "\n"
             sentiment_line = str(actor["sentiment"]) + "\n"
 
+            max_sen_len = max(max_sen_len, len(rev_line.split(" ")))
+
             output_file.write(rev_line + aspect_line + sentiment_line)
 
         if actor["sentiment"] == 1:
@@ -189,6 +193,8 @@ def print_data_output(filename, data):
             num_neutral += 1
         elif actor["sentiment"] == -1:
             num_negative += 1
+
+    print("max sen len:", max_sen_len)
 
         
     output_file.close()

@@ -146,8 +146,8 @@ if __name__ == "__main__":
 		actor_sentences = actor["sentences"]
 		actor_sentiment = actor["sentiment"]
 
-		# score, num_words_missing, num_words = sentiment_analysis_using_lexicon(actor_sentences, lexicon)
-		score, num_words_missing, num_words = sentiment_analysis_guessing_randomly()
+		score, num_words_missing, num_words = sentiment_analysis_using_lexicon(actor_sentences, lexicon)
+		# score, num_words_missing, num_words = sentiment_analysis_guessing_randomly()
 
 		num_words_missing_from_lexicon += num_words_missing
 		total_num_words += num_words
