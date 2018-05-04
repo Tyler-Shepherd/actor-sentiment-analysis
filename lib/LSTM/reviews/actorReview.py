@@ -304,7 +304,10 @@ class LSTM(object):
             saved_path = "-48"
             saver = tf.train.Saver()
             #directory = "/Users/chakra2/Documents/NLP/TD-LSTM-master/models/logs/1525029580_-d1-1.0d2-1.0b-50r-0.0001l2-0.001sen-2200dim-100h-300c-3/my_model-360"
-            directory = "/Users/chakra2/Documents/actor-sentiment-analysis-master/lib/LSTM/models/logs/1525206908_-d1-1.0d2-1.0b-50r-0.1l2-0.001sen-130dim-100h-300c-3/my_model-675"
+            #directory = "/Users/chakra2/Documents/actor-sentiment-analysis-master/lib/LSTM/models/logs/1525206908_-d1-1.0d2-1.0b-50r-0.1l2-0.001sen-130dim-100h-300c-3/my_model-675"
+            directory = "C:\\Users\\shepht2\\Documents\\School\\Natural_Language_Processing\\project\\actor-sentiment-analysis\\lib\\LSTM\\models\\logs\\1525206908_-d1-1.0d2-1.0b-50r-0.1l2-0.001sen-130dim-100h-300c-3/my_model-675"
+
+
 
             #Restore the trained model so predictions can be made for new unseen reviews.
             saver.restore(sess, directory)

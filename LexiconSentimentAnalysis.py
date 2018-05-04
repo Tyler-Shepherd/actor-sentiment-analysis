@@ -5,6 +5,8 @@ import random
 import NLPParsing
 
 
+# Opens the lexicon and reads in to a dictionary
+# Returns a dictionary of word to a dict of data from SentiWordNet
 def read_lexicon():
 	lexicon = open('lib/SentiWordNet/SentiWordNet.txt')
 
@@ -54,20 +56,21 @@ def read_lexicon():
 	return term_to_data
 
 
+# Given a set of sentences, compute the score using the lexicon over the sentences
+# Returns the polarity: -1,0,1, the number of words from the sentences missing from the lexicon, and the total number of words in sentences
 def sentiment_analysis_using_lexicon(sentences, lexicon):
 	num_words_missing = 0
 	num_words = 0
 
 	score = 0
 
+	# Sum the pos_score - neg_score for each word in each sentence
 	for sentence in sentences:
 		sentence = sentence.split()
 
 		# TODO: if we wanted to use the lexicon most efficiently we should do pos tagging on the sentences
 		# each word in the lexicon has multiple sentiments based on meaning and pos
-		# I'm just grabbing the first one for now
-
-		# TODO: remove punctuation (lots of "words" are just punctuation)
+		# We're just grabbing the first one for now
 
 		for word in sentence:
 
@@ -90,8 +93,8 @@ def sentiment_analysis_using_lexicon(sentences, lexicon):
 
 				break
 
-	avg_sentiment = 0.010794992 # over all words in lexicon
-	neutral_sentiment = (num_words - num_words_missing) * avg_sentiment # The exact neutral expected score
+	# This is the avg pos_score - neg_score over all words in the lexicon vocabulary
+	avg_sentiment = 0.010794992
 
 	if num_words - num_words_missing == 0:
 		score = 0
@@ -108,12 +111,14 @@ def sentiment_analysis_using_lexicon(sentences, lexicon):
 	return score, num_words_missing, num_words
 
 
+# Guesses randomly. Used for baseline comparison
 def sentiment_analysis_guessing_randomly():
 	guess = random.randint(-1,1)
 
 	return guess, 0, 0
 
 
+# Returns the sentiment (-1, 0, 1) of the given entity actor in the given review
 def GetSentiment(entity, review):
 	lexicon = read_lexicon()
 
@@ -124,7 +129,7 @@ def GetSentiment(entity, review):
 
 	return score
 
-
+# Run this file itself as main to compute lexicon-based analysis accuracy over all test data
 if __name__ == "__main__":
 	review_data, _, _ = NLPParsing.get_review_data()
 	train_data, test_data = NLPParsing.split_train_and_test(review_data)
@@ -136,6 +141,7 @@ if __name__ == "__main__":
 	total_num_words = 0
 	num_words_missing_from_lexicon = 0
 
+	# Stores the number of correct results for each sentiment class
 	num_correct = {-1: 0, 1: 0, 0: 0}
 
 	for data_point in test_data:

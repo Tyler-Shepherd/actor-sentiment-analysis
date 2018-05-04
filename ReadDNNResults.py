@@ -4,17 +4,18 @@ import NLPParsing
 import math
 
 
-# ../../../../../Anaconda3/python getSentiment.py actor_sentence RNN 1524617308
+# Util file for reading and interpreting DNN (CNN and RNN) results
 
 
-
+# Reads the output of the CNN or RNN classifiers
+# Returns dict of sentences -> sentiment score, the mean sentiment, the sentiment score standard deviation
 def Read_CSV(csv_file):
 	sentence_to_sentiment = {}
 	counter = 0
 
 	sentiments = []
 
-	# Open the results of the CNN sentiment analyzer
+	# Open the results of the CNN/RNN sentiment classifier
 	with open(csv_file, 'r') as csvfile:
 		spamreader = csv.reader(csvfile)
 		for row in spamreader:
@@ -40,7 +41,7 @@ def Read_CSV(csv_file):
 
 
 
-
+# Returns the sentiment (-1,0,1) over actor_sentences using CNN/RNN output file csv_file
 def GetSentiment(csv_file, actor_sentences):
 	sentence_to_sentiment, mean, stdev = Read_CSV(csv_file)
 
@@ -65,22 +66,23 @@ def GetSentiment(csv_file, actor_sentences):
 
 	# print(pred_sentiment)
 
-	if pred_sentiment >= mean + 0.5 * stdev: #0.5 * abs(mean):
+	# Compare to the average +/- 1/2 stdev to turn binary classifier into 3 classes
+	if pred_sentiment >= mean + 0.5 * stdev:
 		return 1
-	elif pred_sentiment <= mean - 0.5 * stdev: #0.5 * abs(mean):
+	elif pred_sentiment <= mean - 0.5 * stdev:
 		return -1
 	else:
 		return 0
 
 
-
+# Computes the CNN/RNN accuracy over all test_data using the CNN/RNN output file results in csv_file
 def compute_DNN_accuracy(csv_file, test_data):
 	sentence_to_sentiment, mean, stdev = Read_CSV(csv_file)
 
-	# Test on only test data
 	num_reviews = len(test_data)
 	num_correct = 0
 
+	# Stores the number of each sentiment class predicted correctly
 	sent_correct = {-1: 0, 0: 0, 1: 0}
 
 	for data_point in test_data:

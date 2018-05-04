@@ -8,6 +8,10 @@ from subprocess import call
 import os
 
 
+# Util file for parsing functions
+
+
+
 # Amartya's column numbers
 # has_actor_col = -1
 # review_col = 29
@@ -50,7 +54,7 @@ def int_to_sentiment(sent_int):
 
 
 
-
+# Reads the data from data/Turk_Results.csv and returns in a dict
 def get_review_data():
     unknown_str = "Unknown"
     counter = 0
@@ -109,8 +113,6 @@ def get_review_data():
                 word_identifier[term] = counter
                 counter += 1
 
-        # movie_review_sentences = review["review"].split(".")
-
         for actor in review["actor_info"]:
             actor["sentences"] = get_actor_sentences(actor["name"], review["review"])
 
@@ -118,31 +120,12 @@ def get_review_data():
                 actor_identifier[actor["name"]] = actor_counter
                 actor_counter += 1
 
-
-        # for sentence in movie_review_sentences:
-        #     for actor in review["actor_info"]:
-        #         actor_name = actor["name"]
-
-        #         if not actor_name in actor_identifier:
-        #             actor_identifier[actor_name] = actor_counter
-        #             actor_counter += 1
-
-        #         if actor_name in sentence or actor_name.lower() in sentence:
-        #             # TODO: update this to be better
-        #             actor["sentences"].append(sentence)
-        #             continue
-        #         for word in actor_name.split(" "):
-        #             if len(word) < 2:
-        #                 continue
-        #             elif word in sentence:
-        #                 actor["sentences"].append(sentence)
-        #                 continue
-
     return review_data, word_identifier, actor_identifier
 
 
 
-# Formats and prints train or test data
+# Formats and prints train or test data to filename
+# Returns the number of positive, neutral, negative data points
 def print_data_output(filename, data):
     output_file = open(filename, 'w')
 
@@ -150,6 +133,7 @@ def print_data_output(filename, data):
     num_negative = 0
     num_neutral = 0
 
+    # Store the max sentence length for use in the neural network models
     max_sen_len = 0
 
     for i in range(len(data)):
@@ -163,7 +147,7 @@ def print_data_output(filename, data):
         actor_sentences = get_actor_sentences(actor_name, review)
 
         for sen in actor_sentences:
-            # Convert actor names to $T$
+            # Convert actor names to $T$ (for use in AT-LSTM training)
             rev_line = sen.replace(actor_name,"$T$")
             rev_line = rev_line.replace(actor_name.lower(), "$T$")
 
@@ -195,7 +179,6 @@ def print_data_output(filename, data):
             num_negative += 1
 
     print("max sen len:", max_sen_len)
-
         
     output_file.close()
 
@@ -249,7 +232,7 @@ def get_actor_sentences(actor_name, review):
 
 
 
-# Run this file itself to run all functions and parse all data
+# Run this file itself to run all functions, parse all data and output to the data directory
 if __name__ == "__main__":
     review_data, word_identifier, actor_identifier = get_review_data()
 

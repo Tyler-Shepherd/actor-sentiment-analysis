@@ -3,9 +3,12 @@ from pprint import pprint
 from imdb import IMDb
 from difflib import SequenceMatcher
 
+# Util file for named entity recognition purposes
+
 
 # Gets all named entities of type PER in the given review text
 def name_tagging(review_text):
+	# Make request to ELISA information extraction API
 	request = "http://blender02.cs.rpi.edu:3300/elisa_ie/entity_discovery_and_linking/en?input_format=plain%20text&output_format=KnowledgeGraph"
 
 	r = requests.post(request, data = review_text)
@@ -29,6 +32,8 @@ def name_tagging(review_text):
 
 	return named_entities
 
+
+# Uses IMDbPy to determine whether an entity name is actually an actor
 def is_actor(entity_name):
 	# TODO: could compile all top results, compute coherence between results
 
